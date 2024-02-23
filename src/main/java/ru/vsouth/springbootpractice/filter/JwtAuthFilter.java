@@ -52,13 +52,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (jwtService.isTokenValid(jwtToken) && SecurityContextHolder.getContext().getAuthentication() == null) {
             String username = jwtService.extractUsername(jwtToken);
             UserInfoUserDetails userDetails = userService.loadUserByUsername(username);
-            System.out.println(username + " " + userDetails.getPassword());
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+                    userDetails.getPassword(),
+                    userDetails.getAuthorities());
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
-            System.out.println(jwtToken);
-            System.out.println(SecurityContextHolder.getContext().getAuthentication());
 
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Токен некорректный");
